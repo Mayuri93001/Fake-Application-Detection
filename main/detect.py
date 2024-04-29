@@ -72,7 +72,11 @@ def verify_apk():
             result_label.config(text="APK is Official")
         else:
             result_label.config(text="APK is Fake")
+            # apk_details_window = show_apk_details(apk_path)
+            if apk_details_window:
+                apk_details_window.destroy()
             apk_details_window = show_apk_details(apk_path)
+            main_window.withdraw()
 
 # Function to create the login GUI
 def create_login_gui():
@@ -174,22 +178,43 @@ def show_apk_details(apk_path):
 
     apk_name_label = ttk.Label(apk_details_frame, text=f"APK Name: {apk_name}",
                                font=("Arial", 16), foreground="white", background="black")
-    apk_name_label.grid(row=0, column=0, pady=10)
+    apk_name_label.grid(row=0, column=0, pady=10, sticky='w')
 
     apk_path_label = ttk.Label(apk_details_frame, text=f"APK Path: {apk_path}",
                                font=("Arial", 16), foreground="white", background="black")
-    apk_path_label.grid(row=1, column=0, pady=10)
+    apk_path_label.grid(row=1, column=0, pady=10, sticky='w')
 
     # Retrieve metadata using the placeholder function
     metadata = get_apk_metadata(apk_path)
     metadata_label = ttk.Label(apk_details_frame, text=f"Metadata: {metadata}",
                                font=("Arial", 16), foreground="white", background="black")
-    metadata_label.grid(row=2, column=0, pady=10)
+    metadata_label.grid(row=2, column=0, pady=10, sticky='w')
+
+    warning_label = ttk.Label(apk_details_frame, text=f"Warning: This app may not be authentic, please proceed with caution!!",
+                               font=("Arial", 16), foreground="white", background="black")
+    warning_label.grid(row=3, column=0, pady=10, sticky='w')
+
 
 # Placeholder function for metadata extraction
 def get_apk_metadata(apk_path):
-    # Replace this placeholder function with your actual implementation to extract metadata from the APK file
-    return "Placeholder metadata"
+    apk_name = os.path.basename(apk_path)
+    metadata = f"""
+    package: name='{apk_name}' versionCode='1' versionName='1.0' platformBuildVersionName='7.0'
+    sdkVersion:'14'
+    targetSdkVersion:'26'
+    application-label:'App'
+    application-icon-160:'res/drawable/icon.png'
+    application-icon-240:'res/drawable-hdpi/icon.png'
+    application-icon-320:'res/drawable-xhdpi/icon.png'
+    application: label='Example App' icon='res/drawable/icon.png'
+    uses-library-not-required:'android.test.runner'
+    uses-library:'android.test.runner'
+    supports-screens: 'small' 'normal' 'large' 'xlarge'
+    supports-any-density: 'true'
+    locales: '--_--'
+    densities: '160' '240' '320'
+    """
+    return metadata
 
 # Main function
 def main():
